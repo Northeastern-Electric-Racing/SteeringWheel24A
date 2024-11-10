@@ -155,16 +155,18 @@ extern void xPortSysTickHandler (void);
 /*
   SysTick handler implementation that also clears overflow flag.
 */
-#if (USE_CUSTOM_SYSTICK_HANDLER_IMPLEMENTATION == 0)
-void SysTick_Handler (void) {
-  /* Clear overflow flag */
-  SysTick->CTRL;
 
-  if (xTaskGetSchedulerState() != taskSCHEDULER_NOT_STARTED) {
+#if (USE_CUSTOM_SYSTICK_HANDLER_IMPLEMENTATION == 0)
+
+//void SysTick_Handler (void) {
+  /* Clear overflow flag */
+ // SysTick->CTRL;
+
+//  if (xTaskGetSchedulerState() != taskSCHEDULER_NOT_STARTED) {
     /* Call tick handler */
-    xPortSysTickHandler();
-  }
-}
+//    xPortSysTickHandler();
+//  }
+//}
 #endif
 #endif /* SysTick */
 

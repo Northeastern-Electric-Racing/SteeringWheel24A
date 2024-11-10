@@ -23,6 +23,8 @@
 #ifndef FREERTOS_OS2_H_
 #define FREERTOS_OS2_H_
 
+#define CMSIS_device_header "stm32f1xx.h"
+
 #include <string.h>
 #include <stdint.h>
 
