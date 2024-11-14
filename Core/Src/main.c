@@ -77,6 +77,22 @@ void StartDefaultTask(void *argument);
 void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin)
 {
 	// TODO SEND CAN MESSAGE
+	switch (GPIO_Pin) {
+	case GPIO_PIN_1:
+		break;
+	case GPIO_PIN_2:
+		break;
+	case GPIO_PIN_3:
+		break;
+	case GPIO_PIN_4:
+		break;
+	case GPIO_PIN_5:
+		break;
+	case GPIO_PIN_6:
+		break;
+	default:
+		break;
+	}
 }
 /* USER CODE END 0 */
 
@@ -137,11 +153,9 @@ int main(void)
 	/* Create the thread(s) */
 	/* creation of defaultTask */
 	defaultTaskHandle =
-		osThreadNew(StartDefaultTask, NULL, &defaultTask_attributes);
+		osThreadNew(StartDefaultTask, can, &defaultTask_attributes);
 
 	/* USER CODE BEGIN RTOS_THREADS */
-	can_dispatch_thread =
-		osThreadNew(vCanDispatch, can, &can_dispatch_attrs);
 
 	/* USER CODE END RTOS_THREADS */
 
@@ -319,9 +333,31 @@ static void MX_GPIO_Init(void)
 void StartDefaultTask(void *argument)
 {
 	/* USER CODE BEGIN 5 */
+	can_msg_t msg_from_queue;
+	HAL_StatusTypeDef msg_status;
+	can_t *can = (can_t *)(argument);
+
 	/* Infinite loop */
 	for (;;) {
-		osDelay(1);
+		osThreadFlagsWait(CAN_DISPATCH_FLAG, osFlagsWaitAny,
+				  osWaitForever);
+		while (osMessageQueueGet(can_outbound_queue, &msg_from_queue,
+					 NULL, 0) == osOK) {
+			msg_status = can_send_msg(can, &msg_from_queue);
+			if (msg_status == HAL_ERROR) {
+				// temporary
+				printf("CAN ERROR\r\n");
+				// TODO: error handling
+				// fault_data.diag = "Failed to send CAN message";
+			} else if (msg_status == HAL_BUSY) {
+				// temporary
+				printf("CAN BUSY\r\n");
+				// TODO: error handling
+				//"Outbound mailbox full!";
+			}
+		}
+
+		osDelay(CAN_DISPATCH_DELAY);
 	}
 	/* USER CODE END 5 */
 }
