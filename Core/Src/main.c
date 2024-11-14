@@ -24,6 +24,7 @@
 #include "cmsis_os.h"
 #include "stm32xx_hal.h"
 #include "can_handler.h"
+#include "button.h"
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
@@ -79,6 +80,7 @@ void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin)
 	// TODO SEND CAN MESSAGE
 	switch (GPIO_Pin) {
 	case GPIO_PIN_1:
+		// queue button message in each case
 		break;
 	case GPIO_PIN_2:
 		break;

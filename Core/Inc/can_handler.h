@@ -19,4 +19,11 @@ extern const osThreadAttr_t can_dispatch_attrs;
  */
 osStatus_t queue_can_msg(can_msg_t can_msg);
 
+/**
+ * @brief sends a can_msg based on the given button id
+ * 
+ * @param button_id
+ */
+osStatus_t queue_button_can_msg(uint8_t button_id);
+
 #endif
