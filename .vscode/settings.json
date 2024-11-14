@@ -1,0 +1,22 @@
+{
+    "files.associations": {
+        "array": "cpp",
+        "chrono": "cpp",
+        "compare": "cpp",
+        "functional": "cpp",
+        "memory_resource": "cpp",
+        "ratio": "cpp",
+        "tuple": "cpp",
+        "type_traits": "cpp",
+        "utility": "cpp",
+        "variant": "cpp",
+        "can_handler.h": "c",
+        "can.h": "c",
+        "cmsis_os.h": "c",
+        "stm32xx_hal.h": "c",
+        "stm32f1xx_hal.h": "c",
+        "freertos.h": "c",
+        "stm32f1xx.h": "c",
+        "c_utils.h": "c"
+    }
+}

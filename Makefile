@@ -37,6 +37,9 @@ BUILD_DIR = build
 # C sources
 C_SOURCES =  \
 Core/Src/main.c \
+Core/Src/can_handler.c \
+Drivers/Embedded-Base/platforms/stm32f405/src/can.c \
+Drivers/Embedded-Base/middleware/src/c_utils.c \
 Core/Src/freertos.c \
 Core/Src/stm32f1xx_it.c \
 Core/Src/stm32f1xx_hal_msp.c \
@@ -65,8 +68,7 @@ Middlewares/Third_Party/FreeRTOS/Source/tasks.c \
 Middlewares/Third_Party/FreeRTOS/Source/timers.c \
 Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS_V2/cmsis_os2.c \
 Middlewares/Third_Party/FreeRTOS/Source/portable/MemMang/heap_4.c \
-Middlewares/Third_Party/FreeRTOS/Source/portable/GCC/ARM_CM3/port.c
-
+Middlewares/Third_Party/FreeRTOS/Source/portable/GCC/ARM_CM3/port.c 
 # ASM sources
 ASM_SOURCES =  \
 startup_stm32f103xb.s
@@ -133,7 +135,10 @@ C_INCLUDES =  \
 -IMiddlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS_V2 \
 -IMiddlewares/Third_Party/FreeRTOS/Source/portable/GCC/ARM_CM3 \
 -IDrivers/CMSIS/Device/ST/STM32F1xx/Include \
--IDrivers/CMSIS/Include
+-IDrivers/CMSIS/Include \
+-IDrivers/Embedded-Base/platforms/stm32f405/include \
+-IDrivers/Embedded-Base/middleware/include \
+-IDrivers/Embedded-Base/stm32f405/include 
 
 
 # compile gcc flags
