@@ -19,7 +19,6 @@
 /* Includes ------------------------------------------------------------------*/
 #include "main.h"
 #include "can.h"
-#include "button.h"
 #include <stdlib.h>
 #include <string.h>
 
@@ -35,7 +34,6 @@
 
 /* Private define ------------------------------------------------------------*/
 /* USER CODE BEGIN PD */
-
 /* USER CODE END PD */
 
 /* Private macro -------------------------------------------------------------*/
@@ -47,7 +45,7 @@
 CAN_HandleTypeDef hcan;
 UART_HandleTypeDef huart1;
 
-volatile uint16_t button;
+volatile uint16_t gpio_pin;
 volatile uint8_t flag;
 
 /* USER CODE BEGIN PV */
@@ -67,7 +65,7 @@ static void MX_USART1_UART_Init(void);
 /* USER CODE BEGIN 0 */
 void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin)
 {
-	button = GPIO_Pin;
+	gpio_pin = GPIO_Pin;
 	flag = 1;
 }
 /* USER CODE END 0 */
@@ -86,11 +84,13 @@ int main(void)
 
 	/* Reset of all peripherals, Initializes the Flash interface and the Systick. */
 	HAL_Init();
+	init_buttons();
+
 	can_t *can = malloc(sizeof(can_t));
 	can->hcan = &hcan;
 
 	can_msg_t can_msg = { .len = sizeof(steeringio_button_t) };
-	uint8_t button_id;
+	button_t button;
 
 	/* USER CODE BEGIN Init */
 
@@ -115,16 +115,46 @@ int main(void)
 	/* USER CODE BEGIN WHILE */
 	while (1) {
 		while (flag) {
-			switch (button) {
+			switch (gpio_pin) {
 			case GPIO_PIN_1:
-				button_id = NERO_BUTTON_LEFT;
+				button = buttons[NERO_BUTTON_LEFT];
+				break;
+			case GPIO_PIN_2:
+				button = buttons[NERO_BUTTON_UP];
+				break;
+			case GPIO_PIN_3:
+				button = buttons[NERO_BUTTON_RIGHT];
+				break;
+			case GPIO_PIN_4:
+				button = buttons[NERO_HOME];
+				break;
+			case GPIO_PIN_5:
+				button = buttons[NERO_BUTTON_SELECT];
+				break;
+			case GPIO_PIN_6:
+				button = buttons[NERO_BUTTON_DOWN];
 				break;
 			default:
 				break;
 			}
-			memcpy(&can_msg.data, &button_id,
-			       sizeof(steeringio_button_t));
+
+			// debounce logic
+			if (!button.pressed) {
+				button.pressed = true;
+				button.prev_tick = HAL_GetTick();
+			}
+
+			// cannot send 8 ms after pressing
+			if (HAL_GetTick() <= button.prev_tick + 8) {
+				continue;
+			}
+
+			button.pressed = false;
+
+			memcpy(&can_msg.data, &button.button_id, 1);
+
 			can_send_msg(can, &can_msg);
+
 			flag = 0;
 		}
 		/* USER CODE END WHILE */
