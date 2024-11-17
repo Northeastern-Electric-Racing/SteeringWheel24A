@@ -18,13 +18,11 @@
 /* USER CODE END Header */
 /* Includes ------------------------------------------------------------------*/
 #include "main.h"
+/* Private includes ----------------------------------------------------------*/
+/* USER CODE BEGIN Includes */
 #include "can.h"
 #include <stdlib.h>
 #include <string.h>
-
-/* Private includes ----------------------------------------------------------*/
-/* USER CODE BEGIN Includes */
-
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -84,6 +82,8 @@ int main(void)
 
 	/* Reset of all peripherals, Initializes the Flash interface and the Systick. */
 	HAL_Init();
+
+	/* USER CODE BEGIN Init */
 	init_buttons();
 
 	can_t *can = malloc(sizeof(can_t));
@@ -91,8 +91,6 @@ int main(void)
 
 	can_msg_t can_msg = { .len = sizeof(steeringio_button_t) };
 	button_t button;
-
-	/* USER CODE BEGIN Init */
 
 	/* USER CODE END Init */
 
@@ -157,9 +155,10 @@ int main(void)
 
 			flag = 0;
 		}
-		/* USER CODE END WHILE */
-		/* USER CODE BEGIN 3 */
 	}
+	/* USER CODE END WHILE */
+	/* USER CODE BEGIN 3 */
+
 	/* USER CODE END 3 */
 }
 
