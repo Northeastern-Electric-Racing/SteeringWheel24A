@@ -18,6 +18,7 @@
 /* USER CODE END Header */
 /* Includes ------------------------------------------------------------------*/
 #include "main.h"
+
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
 #include "can.h"
@@ -32,6 +33,8 @@
 
 /* Private define ------------------------------------------------------------*/
 /* USER CODE BEGIN PD */
+volatile uint8_t flag;
+volatile uint16_t gpio_pin;
 /* USER CODE END PD */
 
 /* Private macro -------------------------------------------------------------*/
@@ -41,10 +44,8 @@
 
 /* Private variables ---------------------------------------------------------*/
 CAN_HandleTypeDef hcan;
-UART_HandleTypeDef huart1;
 
-volatile uint16_t gpio_pin;
-volatile uint8_t flag;
+UART_HandleTypeDef huart1;
 
 /* USER CODE BEGIN PV */
 
@@ -89,7 +90,7 @@ int main(void)
 	can_t *can = malloc(sizeof(can_t));
 	can->hcan = &hcan;
 
-	can_msg_t can_msg = { .len = sizeof(steeringio_button_t) };
+	can_msg_t can_msg = { .len = sizeof(uint8_t) };
 	button_t button;
 
 	/* USER CODE END Init */
@@ -113,24 +114,26 @@ int main(void)
 	/* USER CODE BEGIN WHILE */
 	while (1) {
 		while (flag) {
+			/* To change button mapping, change the index
+			button is retrieving from the list */
 			switch (gpio_pin) {
 			case GPIO_PIN_1:
 				button = buttons[NERO_BUTTON_LEFT];
 				break;
 			case GPIO_PIN_2:
-				button = buttons[NERO_BUTTON_UP];
-				break;
-			case GPIO_PIN_3:
 				button = buttons[NERO_BUTTON_RIGHT];
 				break;
+			case GPIO_PIN_3:
+				button = buttons[NERO_BUTTON_UP];
+				break;
 			case GPIO_PIN_4:
-				button = buttons[NERO_HOME];
+				button = buttons[NERO_BUTTON_DOWN];
 				break;
 			case GPIO_PIN_5:
 				button = buttons[NERO_BUTTON_SELECT];
 				break;
 			case GPIO_PIN_6:
-				button = buttons[NERO_BUTTON_DOWN];
+				button = buttons[NERO_HOME];
 				break;
 			default:
 				break;
@@ -157,6 +160,7 @@ int main(void)
 		}
 	}
 	/* USER CODE END WHILE */
+
 	/* USER CODE BEGIN 3 */
 
 	/* USER CODE END 3 */
@@ -280,7 +284,7 @@ static void MX_GPIO_Init(void)
                            PA5 PA6 */
 	GPIO_InitStruct.Pin = GPIO_PIN_1 | GPIO_PIN_2 | GPIO_PIN_3 |
 			      GPIO_PIN_4 | GPIO_PIN_5 | GPIO_PIN_6;
-	GPIO_InitStruct.Mode = GPIO_MODE_IT_FALLING;
+	GPIO_InitStruct.Mode = GPIO_MODE_IT_RISING;
 	GPIO_InitStruct.Pull = GPIO_NOPULL;
 	HAL_GPIO_Init(GPIOA, &GPIO_InitStruct);
 
