@@ -31,7 +31,7 @@ extern "C" {
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
-
+#include "button.h"
 /* USER CODE END Includes */
 
 /* Exported types ------------------------------------------------------------*/
@@ -59,7 +59,7 @@ void Error_Handler(void);
 /* Private defines -----------------------------------------------------------*/
 
 /* USER CODE BEGIN Private defines */
-
+extern button_t buttons[MAX_BUTTON_SIZE]; /* defined in buttons.c */
 /* USER CODE END Private defines */
 
 #ifdef __cplusplus
