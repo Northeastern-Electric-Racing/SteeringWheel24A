@@ -2,7 +2,7 @@ name: Bug
 description: For any issue related to a bug
 title: '[Area] - Short Description'
 labels: [bug]
-projects: ['Firmware Tickets']
+projects: ['Northeastern-Electric-Racing/Firmware Tickets']
 body:
   - type: textarea
     id: observed-behavior
