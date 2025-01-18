@@ -1,7 +1,7 @@
 name: Feature
 description: Describe a feature that a developer can add.
 title: '[Area] - Short Description'
-projects: ['Northeastern-Electric-Racing/Firmware Tickets']
+projects: ["Northeastern-Electric-Racing/Firmware Tickets"]
 body:
   - type: textarea
     id: description
