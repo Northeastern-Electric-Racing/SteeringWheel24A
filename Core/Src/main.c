@@ -118,22 +118,22 @@ int main(void)
 			button is retrieving from the list */
 			switch (gpio_pin) {
 			case GPIO_PIN_1:
-				button = buttons[BUTTON_1];
+				button = buttons[BUTTON_LEFT];
 				break;
 			case GPIO_PIN_2:
-				button = buttons[BUTTON_2];
+				button = buttons[BUTTON_RIGHT];
 				break;
 			case GPIO_PIN_3:
-				button = buttons[BUTTON_3];
+				button = buttons[BUTTON_ESC];
 				break;
 			case GPIO_PIN_4:
-				button = buttons[BUTTON_4];
+				button = buttons[BUTTON_UP];
 				break;
 			case GPIO_PIN_5:
-				button = buttons[BUTTON_5];
+				button = buttons[BUTTON_DOWN];
 				break;
 			case GPIO_PIN_6:
-				button = buttons[BUTTON_6];
+				button = buttons[BUTTON_ENTER];
 				break;
 			default:
 				break;
@@ -146,7 +146,7 @@ int main(void)
 			}
 
 			// wait 8ms before continuing
-			if (HAL_GetTick() <= button.prev_tick + 8) {
+			if ((HAL_GetTick() <= button.prev_tick + DEBOUNCE_TIME) && DEBOUNCE_ON) {
 				continue;
 			}
 
