@@ -3,12 +3,12 @@
 #include <stdbool.h>
 
 typedef enum {
-	BUTTON_1,
-	BUTTON_2,
-	BUTTON_3,
-	BUTTON_4,
-	BUTTON_5,
-	BUTTON_6,
+	BUTTON_LEFT,
+	BUTTON_RIGHT,
+	BUTTON_ESC,
+	BUTTON_UP,
+	BUTTON_DOWN,
+	BUTTON_ENTER,
 	MAX_BUTTON_SIZE,
 } steeringio_button_t;
 
