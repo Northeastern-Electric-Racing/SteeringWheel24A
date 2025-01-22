@@ -154,6 +154,7 @@ int main(void)
 			if(HAL_GPIO_ReadPin(GPIOA, gpio_pin) == GPIO_PIN_SET) {
 				memcpy(&can_msg.data, &button.button_id, 1);
 				can_send_msg(can, &can_msg);
+				printf("Button %d pressed\n", button.button_id);
 			}
 
 			button.pressed = false;
