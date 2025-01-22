@@ -60,6 +60,7 @@ void Error_Handler(void);
 
 /* USER CODE BEGIN Private defines */
 extern button_t buttons[MAX_BUTTON_SIZE]; /* defined in buttons.c */
+#define STEERING_CANID_IO 0x680
 /* USER CODE END Private defines */
 
 #ifdef __cplusplus
