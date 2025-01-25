@@ -90,7 +90,7 @@ int main(void)
 	can_t *can = malloc(sizeof(can_t));
 	can->hcan = &hcan;
 
-	can_msg_t can_msg = { .len = sizeof(uint8_t) };
+	can_msg_t can_msg = { .len = sizeof(uint8_t), .id = STEERING_CANID_IO };
 	button_t button;
 
 	/* USER CODE END Init */
@@ -118,22 +118,22 @@ int main(void)
 			button is retrieving from the list */
 			switch (gpio_pin) {
 			case GPIO_PIN_1:
-				button = buttons[NERO_BUTTON_LEFT];
+				button = buttons[BUTTON_LEFT];
 				break;
 			case GPIO_PIN_2:
-				button = buttons[NERO_BUTTON_RIGHT];
+				button = buttons[BUTTON_RIGHT];
 				break;
 			case GPIO_PIN_3:
-				button = buttons[NERO_BUTTON_UP];
+				button = buttons[BUTTON_ESC];
 				break;
 			case GPIO_PIN_4:
-				button = buttons[NERO_BUTTON_DOWN];
+				button = buttons[BUTTON_UP];
 				break;
 			case GPIO_PIN_5:
-				button = buttons[NERO_BUTTON_SELECT];
+				button = buttons[BUTTON_DOWN];
 				break;
 			case GPIO_PIN_6:
-				button = buttons[NERO_HOME];
+				button = buttons[BUTTON_ENTER];
 				break;
 			default:
 				break;
@@ -145,17 +145,19 @@ int main(void)
 				button.prev_tick = HAL_GetTick();
 			}
 
-			// cannot send 8 ms after pressing
-			if (HAL_GetTick() <= button.prev_tick + 8) {
+			// wait 8ms before continuing
+			if ((HAL_GetTick() <= button.prev_tick + DEBOUNCE_TIME) && DEBOUNCE_ON) {
 				continue;
 			}
 
+			// if the pin is still high, send CAN message
+			if(HAL_GPIO_ReadPin(GPIOA, gpio_pin) == GPIO_PIN_SET) {
+				memcpy(&can_msg.data, &button.button_id, 1);
+				can_send_msg(can, &can_msg);
+				printf("Button %d pressed\n", button.button_id);
+			}
+
 			button.pressed = false;
-
-			memcpy(&can_msg.data, &button.button_id, 1);
-
-			can_send_msg(can, &can_msg);
-
 			flag = 0;
 		}
 	}
