@@ -117,22 +117,22 @@ int main(void)
 			/* To change button mapping, change the index
 			button is retrieving from the list */
 			switch (gpio_pin) {
-			case GPIO_PIN_1:
+			case BUTTON_1_PIN:
 				button = buttons[BUTTON_LEFT];
 				break;
-			case GPIO_PIN_2:
+			case BUTTON_2_PIN:
 				button = buttons[BUTTON_RIGHT];
 				break;
-			case GPIO_PIN_3:
+			case BUTTON_3_PIN:
 				button = buttons[BUTTON_ESC];
 				break;
-			case GPIO_PIN_4:
+			case BUTTON_4_PIN:
 				button = buttons[BUTTON_UP];
 				break;
-			case GPIO_PIN_5:
+			case BUTTON_5_PIN:
 				button = buttons[BUTTON_DOWN];
 				break;
-			case GPIO_PIN_6:
+			case BUTTON_6_PIN:
 				button = buttons[BUTTON_ENTER];
 				break;
 			default:
