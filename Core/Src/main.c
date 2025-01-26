@@ -33,7 +33,7 @@
 
 /* Private define ------------------------------------------------------------*/
 /* USER CODE BEGIN PD */
-volatile uint8_t flag;
+volatile uint8_t interrupt_flag;
 volatile uint16_t gpio_pin;
 /* USER CODE END PD */
 
@@ -65,7 +65,7 @@ static void MX_USART1_UART_Init(void);
 void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin)
 {
 	gpio_pin = GPIO_Pin;
-	flag = 1;
+	interrupt_flag = 1;
 }
 /* USER CODE END 0 */
 
@@ -93,7 +93,8 @@ int main(void)
 
 	button_t button;
   GPIO_TypeDef* port = NULL;
-  uint8_t input_type = 0; // 0 is none, 1 is button, 2 is switch (for torque dial)
+  uint8_t button_flag = 0;
+  uint8_t dial_flag = 0;
   dial_t dial;
 
   init_buttons();
@@ -117,68 +118,67 @@ int main(void)
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
 	while (1) {
-		while (flag) {
+		while (interrupt_flag) {
 			/* To change button mapping, change the index
 			button is retrieving from the list */
 			switch (gpio_pin) {
 			case BUTTON_1_PIN:
         port = GPIOB;
-        input_type = 1;
+        button_flag = 1;
 				button = buttons[BUTTON_LEFT];
 				break;
 			case BUTTON_2_PIN:
         port = GPIOB;
-        input_type = 1;
+        button_flag = 1;
 				button = buttons[BUTTON_RIGHT];
 				break;
 			case BUTTON_3_PIN:
         port = GPIOB;
-        input_type = 1;
+        button_flag = 1;
 				button = buttons[BUTTON_ESC];
 				break;
 			case BUTTON_4_PIN:
         port = GPIOA;
-        input_type = 1;
+        button_flag = 1;
 				button = buttons[BUTTON_UP];
 				break;
 			case BUTTON_5_PIN:
         port = GPIOB;
-        input_type = 1;
+        button_flag = 1;
 				button = buttons[BUTTON_DOWN];
 				break;
 			case BUTTON_6_PIN:
         port = GPIOB;
-        input_type = 1;
+        button_flag = 1;
 				button = buttons[BUTTON_ENTER];
 				break;
       case SWITCH_1_PIN:
         port = GPIOB;
-        input_type = 2;
+        dial_flag = 1;
         break;
       case SWITCH_2_PIN:
         port = GPIOB;
-        input_type = 2;
+        dial_flag = 1;
         break;
       case SWITCH_3_PIN:
         port = GPIOB;
-        input_type = 2;
+        dial_flag = 1;
         break;
       case SWITCH_4_PIN:
         port = GPIOB;
-        input_type = 2;
+        dial_flag = 1;
         break;
       case SWITCH_5_PIN:
         port = GPIOB;
-        input_type = 2;
+        dial_flag = 1;
         break;
 			default:
-        input_type = 0;
 				break;
 			}
-      flag = 0;
+      interrupt_flag = 0;
     }
 
-    while(input_type == 1) {
+    while(button_flag) {
       // debounce logic
 			if (!button.pressed) {
 				button.pressed = true;
@@ -201,10 +201,10 @@ int main(void)
       }
 
 			button.pressed = false;
-      input_type = 0;
+      button_flag = 0;
     }
 
-    while(input_type == 2) {
+    while(dial_flag) {
       if(!dial.actively_debouncing) {
         dial.actively_debouncing = true;
         dial.prev_tick = HAL_GetTick();
@@ -224,7 +224,7 @@ int main(void)
 			}
 
       dial.actively_debouncing = false;
-      input_type = 0;
+      dial_flag = 0;
 	  }
   }
     /* USER CODE END WHILE */
