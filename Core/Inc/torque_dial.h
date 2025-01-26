@@ -19,7 +19,7 @@ typedef enum {
 } dial_switches_t;
 
 typedef struct dial {
-    uint8_t dial_current_setting;
+	uint8_t dial_current_setting;
 	uint32_t prev_tick;
 	bool actively_debouncing;
 } dial_t;
