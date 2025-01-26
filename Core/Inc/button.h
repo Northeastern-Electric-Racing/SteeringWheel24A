@@ -27,6 +27,6 @@ void init_buttons();
 #define BUTTON_1_PIN GPIO_PIN_2 // PB2
 #define BUTTON_2_PIN GPIO_PIN_10 // PB10
 #define BUTTON_3_PIN GPIO_PIN_11 // PB11
-#define BUTTON_4_PIN GPIO_PIN_7 // PA7
+#define BUTTON_4_PIN GPIO_PIN_4 // PA7   // (This will probably change)
 #define BUTTON_5_PIN GPIO_PIN_0 // PB0
 #define BUTTON_6_PIN GPIO_PIN_1 // PB1

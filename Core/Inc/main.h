@@ -32,6 +32,7 @@ extern "C" {
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
 #include "button.h"
+#include "torque_dial.h"
 /* USER CODE END Includes */
 
 /* Exported types ------------------------------------------------------------*/
@@ -60,9 +61,12 @@ void Error_Handler(void);
 
 /* USER CODE BEGIN Private defines */
 extern button_t buttons[MAX_BUTTON_SIZE]; /* defined in buttons.c */
-#define STEERING_CANID_IO 0x680
-#define DEBOUNCE_TIME 8 // unit is ms
-#define DEBOUNCE_ON 1 // 0 for off, 1 for on
+#define BUTTON_CANID_IO 0x680
+#define DIAL_CANID_IO 0x681
+#define BUTTON_DEBOUNCE_TIME 8 // unit is ms
+#define BUTTON_DEBOUNCE_ON 1 // 0 for off, 1 for on
+#define DIAL_DEBOUNCE_TIME 10 // unit is ms
+#define DIAL_DEBOUNCE_ON 1 // 0 for off, 1 for on
 /* USER CODE END Private defines */
 
 #ifdef __cplusplus

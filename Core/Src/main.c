@@ -85,15 +85,18 @@ int main(void)
   HAL_Init();
 
   /* USER CODE BEGIN Init */
-	init_buttons();
 
 	can_t *can = malloc(sizeof(can_t));
 	can->hcan = &hcan;
+	can_msg_t can_msg_button = { .len = sizeof(uint8_t), .id = BUTTON_CANID_IO }; // change this later
+  can_msg_t can_msg_dial =  { .len = sizeof(uint8_t), .id = DIAL_CANID_IO }; // change this later
 
-	can_msg_t can_msg = { .len = sizeof(uint8_t), .id = STEERING_CANID_IO };
 	button_t button;
   GPIO_TypeDef* port = NULL;
+  uint8_t input_type = 0; // 0 is none, 1 is button, 2 is switch (for torque dial)
+  dial_t dial;
 
+  init_buttons();
   /* USER CODE END Init */
 
   /* Configure the system clock */
@@ -108,7 +111,7 @@ int main(void)
   MX_CAN_Init();
   MX_USART1_UART_Init();
   /* USER CODE BEGIN 2 */
-
+  init_dial(&dial, can, can_msg_dial);
   /* USER CODE END 2 */
 
   /* Infinite loop */
@@ -120,47 +123,77 @@ int main(void)
 			switch (gpio_pin) {
 			case BUTTON_1_PIN:
         port = GPIOB;
+        input_type = 1;
 				button = buttons[BUTTON_LEFT];
 				break;
 			case BUTTON_2_PIN:
         port = GPIOB;
+        input_type = 1;
 				button = buttons[BUTTON_RIGHT];
 				break;
 			case BUTTON_3_PIN:
         port = GPIOB;
+        input_type = 1;
 				button = buttons[BUTTON_ESC];
 				break;
 			case BUTTON_4_PIN:
         port = GPIOA;
+        input_type = 1;
 				button = buttons[BUTTON_UP];
 				break;
 			case BUTTON_5_PIN:
         port = GPIOB;
+        input_type = 1;
 				button = buttons[BUTTON_DOWN];
 				break;
 			case BUTTON_6_PIN:
         port = GPIOB;
+        input_type = 1;
 				button = buttons[BUTTON_ENTER];
 				break;
+      case SWITCH_1_PIN:
+        port = GPIOB;
+        input_type = 2;
+        break;
+      case SWITCH_2_PIN:
+        port = GPIOB;
+        input_type = 2;
+        break;
+      case SWITCH_3_PIN:
+        port = GPIOB;
+        input_type = 2;
+        break;
+      case SWITCH_4_PIN:
+        port = GPIOB;
+        input_type = 2;
+        break;
+      case SWITCH_5_PIN:
+        port = GPIOB;
+        input_type = 2;
+        break;
 			default:
+        input_type = 0;
 				break;
 			}
+      flag = 0;
+    }
 
-			// debounce logic
+    while(input_type == 1) {
+      // debounce logic
 			if (!button.pressed) {
 				button.pressed = true;
 				button.prev_tick = HAL_GetTick();
 			}
 
 			// wait 8ms before continuing
-			if ((HAL_GetTick() <= button.prev_tick + DEBOUNCE_TIME) && DEBOUNCE_ON) {
+			if ((HAL_GetTick() <= button.prev_tick + BUTTON_DEBOUNCE_TIME) && BUTTON_DEBOUNCE_ON) {
 				continue;
 			}
 
 			// if the pin is still high, send CAN message
 			if(HAL_GPIO_ReadPin(port, gpio_pin) == GPIO_PIN_SET) {
-				memcpy(&can_msg.data, &button.button_id, 1);
-				can_send_msg(can, &can_msg);
+				memcpy(&can_msg_button.data, &button.button_id, 1);
+				can_send_msg(can, &can_msg_button);
 				printf("Button %d pressed\n", button.button_id);
 			}
       else {
@@ -168,13 +201,36 @@ int main(void)
       }
 
 			button.pressed = false;
-			flag = 0;
-		}
-	}
+      input_type = 0;
+    }
+
+    while(input_type == 2) {
+      if(!dial.actively_debouncing) {
+        dial.actively_debouncing = true;
+        dial.prev_tick = HAL_GetTick();
+      }
+
+      // wait 10ms before continuing
+      if ((HAL_GetTick() <= dial.prev_tick + DIAL_DEBOUNCE_TIME) && DIAL_DEBOUNCE_ON) {
+				continue;
+			}
+
+      // if the pin is still high, send CAN message
+			if(HAL_GPIO_ReadPin(port, gpio_pin) == GPIO_PIN_SET) {
+        dial.dial_current_setting = switch_dial_setting(gpio_pin);
+				memcpy(&can_msg_dial.data, &dial.dial_current_setting, 1);
+				can_send_msg(can, &can_msg_dial);
+				printf("Button %d pressed\n", dial.dial_current_setting);
+			}
+
+      dial.actively_debouncing = false;
+      input_type = 0;
+	  }
+  }
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
-
+    
   /* USER CODE END 3 */
 }
 
