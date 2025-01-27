@@ -15,10 +15,6 @@ typedef enum {
 	MAX_BUTTON_SIZE,
 } steeringio_button_t;
 
-typedef struct driver_io {
-	can_t *can;
-} driver_io_t;
-
 /**
  * @brief Called when a button interrupt is triggered. Sends a CAN message with the button's id.
  */
