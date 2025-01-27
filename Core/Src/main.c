@@ -265,6 +265,7 @@ static void MX_GPIO_Init(void)
 /* USER CODE BEGIN 4 */
 void determine_action(uint16_t GPIO_Pin) {
   uint8_t button_id;
+  uint8_t dial_id;
   switch (GPIO_Pin) {
 		case BUTTON_1_PIN:
 			button_id = BUTTON_LEFT;
@@ -290,6 +291,26 @@ void determine_action(uint16_t GPIO_Pin) {
       button_id = BUTTON_ENTER;
 			button_pressed(GPIOB, GPIO_Pin, button_id, can);
 			break;
+    case SWITCH_1_PIN:
+      dial_id = DIAL_SWITCH_1;
+      // dial function
+      break;
+    case SWITCH_2_PIN:
+      dial_id = DIAL_SWITCH_2;
+      // dial function
+      break;
+    case SWITCH_3_PIN:
+      dial_id = DIAL_SWITCH_3;
+      // dial function
+      break;
+    case SWITCH_4_PIN:
+      dial_id = DIAL_SWITCH_4;
+      // dial function
+      break;
+    case SWITCH_5_PIN:
+      dial_id = DIAL_SWITCH_5;
+      // dial function
+      break;
 		default:
 			break;
 	}

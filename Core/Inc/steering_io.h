@@ -15,6 +15,15 @@ typedef enum {
 	MAX_BUTTON_SIZE,
 } steeringio_button_t;
 
+typedef enum {
+	DIAL_SWITCH_1,
+	DIAL_SWITCH_2,
+	DIAL_SWITCH_3,
+	DIAL_SWITCH_4,
+	DIAL_SWITCH_5,
+	MAX_DIAL_SIZE,
+} steeringio_dial_t;
+
 /**
  * @brief Called when a button interrupt is triggered. Sends a CAN message with the button's id.
  */
@@ -34,6 +43,13 @@ void button_pressed(GPIO_TypeDef *port, uint16_t GPIO_Pin, uint8_t button_id, ca
 #define BUTTON_1_PIN GPIO_PIN_2 // PB2
 #define BUTTON_2_PIN GPIO_PIN_10 // PB10
 #define BUTTON_3_PIN GPIO_PIN_11 // PB11
-#define BUTTON_4_PIN GPIO_PIN_7 // PA7
+#define BUTTON_4_PIN GPIO_PIN_4 // PA4 (this might change)
 #define BUTTON_5_PIN GPIO_PIN_0 // PB0
 #define BUTTON_6_PIN GPIO_PIN_1 // PB1
+
+/* Dial Switch Pins */
+#define SWITCH_1_PIN GPIO_PIN_5 // PB5
+#define SWITCH_2_PIN GPIO_PIN_6 // PB6
+#define SWITCH_3_PIN GPIO_PIN_7 // PB7
+#define SWITCH_4_PIN GPIO_PIN_8 // PB8
+#define SWITCH_5_PIN GPIO_PIN_9 // PB9
