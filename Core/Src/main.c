@@ -34,7 +34,8 @@
 
 /* Private define ------------------------------------------------------------*/
 /* USER CODE BEGIN PD */
-
+volatile uint8_t flag;
+volatile uint16_t gpio_pin;
 /* USER CODE END PD */
 
 /* Private macro -------------------------------------------------------------*/
@@ -64,7 +65,8 @@ void determine_action(uint16_t GPIO_Pin);
 /* USER CODE BEGIN 0 */
 void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin)
 {
-	determine_action(GPIO_Pin);
+  flag = 1;
+  gpio_pin = GPIO_Pin;
 }
 /* USER CODE END 0 */
 
@@ -108,7 +110,10 @@ int main(void)
   /* USER CODE BEGIN WHILE */
 	while (1) 
   {
-    // see if thing can go here
+    if(flag) {
+      flag = 0;
+      determine_action(gpio_pin);
+    }
 	}
     /* USER CODE END WHILE */
 
