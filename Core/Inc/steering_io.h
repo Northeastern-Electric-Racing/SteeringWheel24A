@@ -29,6 +29,11 @@ typedef enum {
  */
 void button_pressed(GPIO_TypeDef *port, uint16_t GPIO_Pin, uint8_t button_id, can_t *can);
 
+/**
+ * @brief Called when a dial switch interrupt is triggered. Sends a CAN message with the dial switch's id.
+ */
+void dial_switched(GPIO_TypeDef *port, uint16_t GPIO_Pin, uint8_t switch_id, can_t *can);
+
 /* CAN IDs */
 #define BUTTON_CANID_IO 0x680
 #define DIAL_CANID_IO 	0x681

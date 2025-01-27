@@ -293,23 +293,23 @@ void determine_action(uint16_t GPIO_Pin) {
 			break;
     case SWITCH_1_PIN:
       dial_id = DIAL_SWITCH_1;
-      // dial function
+      dial_switched(GPIOB, GPIO_Pin, dial_id, can);
       break;
     case SWITCH_2_PIN:
       dial_id = DIAL_SWITCH_2;
-      // dial function
+      dial_switched(GPIOB, GPIO_Pin, dial_id, can);
       break;
     case SWITCH_3_PIN:
       dial_id = DIAL_SWITCH_3;
-      // dial function
+      dial_switched(GPIOB, GPIO_Pin, dial_id, can);
       break;
     case SWITCH_4_PIN:
       dial_id = DIAL_SWITCH_4;
-      // dial function
+      dial_switched(GPIOB, GPIO_Pin, dial_id, can);
       break;
     case SWITCH_5_PIN:
       dial_id = DIAL_SWITCH_5;
-      // dial function
+      dial_switched(GPIOB, GPIO_Pin, dial_id, can);
       break;
 		default:
 			break;
