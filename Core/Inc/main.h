@@ -31,7 +31,6 @@ extern "C" {
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
-#include "button.h"
 /* USER CODE END Includes */
 
 /* Exported types ------------------------------------------------------------*/
@@ -59,10 +58,6 @@ void Error_Handler(void);
 /* Private defines -----------------------------------------------------------*/
 
 /* USER CODE BEGIN Private defines */
-extern button_t buttons[MAX_BUTTON_SIZE]; /* defined in buttons.c */
-#define STEERING_CANID_IO 0x680
-#define DEBOUNCE_TIME 8 // unit is ms
-#define DEBOUNCE_ON 1 // 0 for off, 1 for on
 /* USER CODE END Private defines */
 
 #ifdef __cplusplus
