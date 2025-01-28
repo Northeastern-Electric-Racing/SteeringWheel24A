@@ -24,6 +24,7 @@
 #include "can.h"
 #include <stdlib.h>
 #include <string.h>
+#include "steering_io.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -48,7 +49,7 @@ CAN_HandleTypeDef hcan;
 UART_HandleTypeDef huart1;
 
 /* USER CODE BEGIN PV */
-
+can_t *can;
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
@@ -57,15 +58,15 @@ static void MX_GPIO_Init(void);
 static void MX_CAN_Init(void);
 static void MX_USART1_UART_Init(void);
 /* USER CODE BEGIN PFP */
-
+void determine_action(uint16_t GPIO_Pin);
 /* USER CODE END PFP */
 
 /* Private user code ---------------------------------------------------------*/
 /* USER CODE BEGIN 0 */
 void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin)
 {
-	gpio_pin = GPIO_Pin;
-	flag = 1;
+  flag = 1;
+  gpio_pin = GPIO_Pin;
 }
 /* USER CODE END 0 */
 
@@ -85,14 +86,8 @@ int main(void)
   HAL_Init();
 
   /* USER CODE BEGIN Init */
-	init_buttons();
-
-	can_t *can = malloc(sizeof(can_t));
+  can = malloc(sizeof(can_t));
 	can->hcan = &hcan;
-
-	can_msg_t can_msg = { .len = sizeof(uint8_t), .id = STEERING_CANID_IO };
-	button_t button;
-  GPIO_TypeDef* port = NULL;
 
   /* USER CODE END Init */
 
@@ -113,63 +108,12 @@ int main(void)
 
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
-	while (1) {
-		while (flag) {
-			/* To change button mapping, change the index
-			button is retrieving from the list */
-			switch (gpio_pin) {
-			case BUTTON_1_PIN:
-        port = GPIOB;
-				button = buttons[BUTTON_LEFT];
-				break;
-			case BUTTON_2_PIN:
-        port = GPIOB;
-				button = buttons[BUTTON_RIGHT];
-				break;
-			case BUTTON_3_PIN:
-        port = GPIOB;
-				button = buttons[BUTTON_ESC];
-				break;
-			case BUTTON_4_PIN:
-        port = GPIOA;
-				button = buttons[BUTTON_UP];
-				break;
-			case BUTTON_5_PIN:
-        port = GPIOB;
-				button = buttons[BUTTON_DOWN];
-				break;
-			case BUTTON_6_PIN:
-        port = GPIOB;
-				button = buttons[BUTTON_ENTER];
-				break;
-			default:
-				break;
-			}
-
-			// debounce logic
-			if (!button.pressed) {
-				button.pressed = true;
-				button.prev_tick = HAL_GetTick();
-			}
-
-			// wait 8ms before continuing
-			if ((HAL_GetTick() <= button.prev_tick + DEBOUNCE_TIME) && DEBOUNCE_ON) {
-				continue;
-			}
-
-			// if the pin is still high, send CAN message
-			if(HAL_GPIO_ReadPin(port, gpio_pin) == GPIO_PIN_SET) {
-				memcpy(&can_msg.data, &button.button_id, 1);
-				can_send_msg(can, &can_msg);
-				printf("Button %d pressed\n", button.button_id);
-			}
-      else {
-        printf("Failed to read the pin for button %d when doing debounce check.\n", button.button_id);
-      }
-
-			button.pressed = false;
-			flag = 0;
-		}
+	while (1) 
+  {
+    if(flag) {
+      flag = 0;
+      determine_action(gpio_pin);
+    }
 	}
     /* USER CODE END WHILE */
 
@@ -299,26 +243,20 @@ static void MX_GPIO_Init(void)
   __HAL_RCC_GPIOA_CLK_ENABLE();
   __HAL_RCC_GPIOB_CLK_ENABLE();
 
-  /*Configure GPIO pin : PA7 */
-  GPIO_InitStruct.Pin = GPIO_PIN_7;
+  /*Configure GPIO pin : PA4 */
+  GPIO_InitStruct.Pin = GPIO_PIN_4;
   GPIO_InitStruct.Mode = GPIO_MODE_IT_RISING;
   GPIO_InitStruct.Pull = GPIO_NOPULL;
   HAL_GPIO_Init(GPIOA, &GPIO_InitStruct);
 
   /*Configure GPIO pins : PB0 PB1 PB2 PB10
-                           PB11 */
+                           PB11 PB5 PB6 PB7
+                           PB8 PB9 */
   GPIO_InitStruct.Pin = GPIO_PIN_0|GPIO_PIN_1|GPIO_PIN_2|GPIO_PIN_10
-                          |GPIO_PIN_11;
+                          |GPIO_PIN_11|GPIO_PIN_5|GPIO_PIN_6|GPIO_PIN_7
+                          |GPIO_PIN_8|GPIO_PIN_9;
   GPIO_InitStruct.Mode = GPIO_MODE_IT_RISING;
   GPIO_InitStruct.Pull = GPIO_NOPULL;
-  HAL_GPIO_Init(GPIOB, &GPIO_InitStruct);
-
-  /*Configure GPIO pins : PB5 PB6 PB7 PB8
-                           PB9 */
-  GPIO_InitStruct.Pin = GPIO_PIN_5|GPIO_PIN_6|GPIO_PIN_7|GPIO_PIN_8
-                          |GPIO_PIN_9;
-  GPIO_InitStruct.Mode = GPIO_MODE_INPUT;
-  GPIO_InitStruct.Pull = GPIO_PULLDOWN;
   HAL_GPIO_Init(GPIOB, &GPIO_InitStruct);
 
 /* USER CODE BEGIN MX_GPIO_Init_2 */
@@ -326,7 +264,58 @@ static void MX_GPIO_Init(void)
 }
 
 /* USER CODE BEGIN 4 */
-
+void determine_action(uint16_t GPIO_Pin) {
+  uint8_t button_id;
+  uint8_t dial_id;
+  switch (GPIO_Pin) {
+		case BUTTON_1_PIN:
+			button_id = BUTTON_LEFT;
+      button_pressed(GPIOB, GPIO_Pin, button_id, can);
+			break;
+		case BUTTON_2_PIN:
+			button_id = BUTTON_RIGHT;
+      button_pressed(GPIOB, GPIO_Pin, button_id, can);
+			break;
+		case BUTTON_3_PIN:
+			button_id = BUTTON_ESC;
+      button_pressed(GPIOB, GPIO_Pin, button_id, can);
+			break;
+		case BUTTON_4_PIN:
+      button_id = BUTTON_UP;
+			button_pressed(GPIOA, GPIO_Pin, button_id, can);
+			break;
+		case BUTTON_5_PIN:
+      button_id = BUTTON_DOWN;
+			button_pressed(GPIOB, GPIO_Pin, button_id, can);
+			break;
+		case BUTTON_6_PIN:
+      button_id = BUTTON_ENTER;
+			button_pressed(GPIOB, GPIO_Pin, button_id, can);
+			break;
+    case SWITCH_1_PIN:
+      dial_id = DIAL_SWITCH_1;
+      dial_switched(GPIOB, GPIO_Pin, dial_id, can);
+      break;
+    case SWITCH_2_PIN:
+      dial_id = DIAL_SWITCH_2;
+      dial_switched(GPIOB, GPIO_Pin, dial_id, can);
+      break;
+    case SWITCH_3_PIN:
+      dial_id = DIAL_SWITCH_3;
+      dial_switched(GPIOB, GPIO_Pin, dial_id, can);
+      break;
+    case SWITCH_4_PIN:
+      dial_id = DIAL_SWITCH_4;
+      dial_switched(GPIOB, GPIO_Pin, dial_id, can);
+      break;
+    case SWITCH_5_PIN:
+      dial_id = DIAL_SWITCH_5;
+      dial_switched(GPIOB, GPIO_Pin, dial_id, can);
+      break;
+		default:
+			break;
+	}
+}
 /* USER CODE END 4 */
 
 /**
