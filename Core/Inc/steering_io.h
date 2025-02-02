@@ -12,6 +12,7 @@ typedef enum {
 	BUTTON_UP,
 	BUTTON_DOWN,
 	BUTTON_ENTER,
+	SPARE_BUTTON,
 	MAX_BUTTON_SIZE,
 } steeringio_button_t;
 
@@ -50,9 +51,10 @@ void dial_switched(GPIO_TypeDef *port, uint16_t GPIO_Pin, uint8_t switch_id,
 #define BUTTON_1_PIN GPIO_PIN_2 // PB2
 #define BUTTON_2_PIN GPIO_PIN_10 // PB10
 #define BUTTON_3_PIN GPIO_PIN_11 // PB11
-#define BUTTON_4_PIN GPIO_PIN_4 // PA4 (this might change)
+#define BUTTON_4_PIN GPIO_PIN_4 // PA4
 #define BUTTON_5_PIN GPIO_PIN_0 // PB0
 #define BUTTON_6_PIN GPIO_PIN_1 // PB1
+#define SPARE_BUTTON_PIN GPIO_PIN_3 // PA3
 
 /* Dial Switch Pins */
 #define SWITCH_1_PIN GPIO_PIN_5 // PB5
