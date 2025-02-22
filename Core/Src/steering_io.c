@@ -19,7 +19,7 @@ void button_pressed(GPIO_TypeDef *port, uint16_t GPIO_Pin, uint8_t button_id,
 	can_msg_t can_msg = { .len = sizeof(uint8_t), .id = BUTTON_CANID_IO };
 	memcpy(&can_msg.data, &button_id, 1);
 	can_send_msg(can, &can_msg);
-	printf("Button %d pressed\n", button_id);
+	printf("Button %d pressed\n", button_id+1);
 }
 
 void dial_switched(GPIO_TypeDef *port, uint16_t GPIO_Pin, uint8_t switch_id,
@@ -39,5 +39,5 @@ void dial_switched(GPIO_TypeDef *port, uint16_t GPIO_Pin, uint8_t switch_id,
 	can_msg_t can_msg = { .len = sizeof(uint8_t), .id = DIAL_CANID_IO };
 	memcpy(&can_msg.data, &switch_id, 1);
 	can_send_msg(can, &can_msg);
-	printf("Dial switched to id %d\n", switch_id);
+	printf("Dial switched to id %d\n", switch_id+1);
 }
