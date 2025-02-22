@@ -1,4 +1,4 @@
-mach create
+mach create "steering_wheel"
 
 logLevel 1
 
