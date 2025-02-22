@@ -4,6 +4,7 @@
 void button_pressed(GPIO_TypeDef *port, uint16_t GPIO_Pin, uint8_t button_id,
 		    can_t *can)
 {
+	printf("Entering Button \n");
 	/* Debounce Logic */
 	if (DEBOUNCE_BUTTON_ON) {
 		HAL_Delay(DEBOUNCE_BUTTON_TIME);
