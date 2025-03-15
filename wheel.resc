@@ -1,0 +1,30 @@
+mach create "steering_wheel"
+
+logLevel 1
+
+emulation CreateCANHub "canHub"
+
+include $CWD/Drivers/Embedded-Base/dev/renode/can/STMCAN_NER.cs
+include $CWD/Drivers/Embedded-Base/dev/renode/can/SocketCANBridgeNER.cs
+
+machine LoadPlatformDescription $CWD/steering_wheel.repl
+
+sysbus LoadELF $CWD/build/SteeringWheel24A.elf
+
+machine CreateSocketCANBridgeNER "socketcan" "vcan0" 
+
+machine StartGdbServer 3333 true
+
+connector Connect sysbus.can1 canHub
+
+connector Connect sysbus.socketcan canHub 
+
+showAnalyzer sysbus.usart1
+
+start
+
+#sysbus.gpioPortB.button0 PressAndRelease 
+# To connect to GDB server run gdb-multiarch ./build/*.elf -ex "target remote localhost:3333"
+# To see the can messages emitted run `candump vcan0` on host in a separate terminal
+# To initialize the vcan run `sudo modprobe vcan` and then `sudo ip link add dev vcan0 type vcan` and `sudo ip link set up vcan0`
+# sudo docker run --rm --network=host -it -v $(pwd):/mnt -w /mnt antmicro/renode renode -e "include @/mnt/wheel.resc"

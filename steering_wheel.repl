@@ -1,0 +1,37 @@
+using "./Drivers/Embedded-Base/dev/renode/cpus/stm32f103_ner.repl"
+
+button6: Miscellaneous.Button @ gpioPortB 
+    IRQ -> gpioPortB@1
+
+button5: Miscellaneous.Button @ gpioPortB 
+    IRQ -> gpioPortB@0
+
+button1: Miscellaneous.Button @ gpioPortB 
+    IRQ -> gpioPortB@2
+
+button2: Miscellaneous.Button @ gpioPortB 
+    IRQ -> gpioPortB@10
+
+button3: Miscellaneous.Button @ gpioPortB 
+    IRQ -> gpioPortB@11
+
+spareButton: Miscellaneous.Button @ gpioPortA
+    IRQ -> gpioPortA@3
+    
+button4: Miscellaneous.Button @ gpioPortA
+    IRQ -> gpioPortA@4
+
+switch1: Miscellaneous.Button @ gpioPortB 
+    IRQ -> gpioPortB@5
+
+switch2: Miscellaneous.Button @ gpioPortB 
+    IRQ -> gpioPortB@6
+
+switch3: Miscellaneous.Button @ gpioPortB 
+    IRQ -> gpioPortB@7
+
+switch4: Miscellaneous.Button @ gpioPortB 
+    IRQ -> gpioPortB@8
+
+switch5: Miscellaneous.Button @ gpioPortB 
+    IRQ -> gpioPortB@9
